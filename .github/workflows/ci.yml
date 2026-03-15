@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          pip install scikit-learn pandas numpy click rich pyyaml tqdm xgboost matplotlib
+
+      - name: Generate synthetic data
+        run: python scripts/generate_synthetic_data.py --n-transactions 1000 --output data/raw/transactions.csv
+
+      - name: Smoke test pipeline (1% sample)
+        run: python scripts/run_pipeline.py --seed 42 --sample-frac 0.1
+
+      - name: Verify imports
+        run: python -c "from src.core import *; print('imports OK')"
