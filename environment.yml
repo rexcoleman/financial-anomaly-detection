@@ -1,0 +1,20 @@
+name: fin-anomaly
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip
+  - pytest
+  - pip:
+    - scikit-learn>=1.4
+    - pandas>=2.1
+    - numpy>=1.26
+    - xgboost>=2.0
+    - shap>=0.44
+    - matplotlib>=3.8
+    - streamlit>=1.30
+    - click
+    - rich
+    - pyyaml
+    - tqdm

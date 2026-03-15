@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "fin-anomaly"
+version = "0.1.0"
+description = "CFA-informed ML fraud detection with adversarial controllability analysis"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.11"
+authors = [{name = "Rex Coleman"}]
+keywords = ["ai", "security", "machine-learning"]
+
+[project.urls]
+Homepage = "https://github.com/rexcoleman/financial-anomaly-detection"
+Repository = "https://github.com/rexcoleman/financial-anomaly-detection"
+
+[tool.setuptools.packages.find]
+include = ["src*"]
