@@ -1,0 +1,134 @@
+{
+  "seed": 42,
+  "sample_frac": 1.0,
+  "n_transactions": 100000,
+  "fraud_rate": 0.035,
+  "results": {
+    "rule_based": {
+      "auc": 0.897724318792849
+    },
+    "LogisticRegression": {
+      "auc": 0.9764799388379828,
+      "f1": 0.5571187394485088,
+      "precision": 0.4008097165991903,
+      "recall": 0.9132841328413284,
+      "improvement_pp": 7.875562004513381
+    },
+    "RandomForest": {
+      "auc": 0.9735667736397934,
+      "f1": 0.8350515463917526,
+      "precision": 0.9462616822429907,
+      "recall": 0.7472324723247232,
+      "improvement_pp": 7.58424548469444
+    },
+    "XGBoost": {
+      "auc": 0.9865081430676667,
+      "f1": 0.7928601079286011,
+      "precision": 0.720754716981132,
+      "recall": 0.8809963099630996,
+      "improvement_pp": 8.878382427481768
+    },
+    "isolation_forest": {
+      "anomalies": 1118,
+      "anomaly_precision": 0.5384615384615384,
+      "additional_fraud_found": 12,
+      "additional_pct": 1.107011070110701
+    },
+    "shap": {
+      "top_features": [
+        {
+          "name": "billing_country_enc",
+          "importance": 1.6494883298873901
+        },
+        {
+          "name": "addr_mismatch",
+          "importance": 1.6310805082321167
+        },
+        {
+          "name": "email_domain_enc",
+          "importance": 1.3147212266921997
+        },
+        {
+          "name": "amt_to_median_ratio",
+          "importance": 1.2747704982757568
+        },
+        {
+          "name": "protonmail",
+          "importance": 0.7698932886123657
+        },
+        {
+          "name": "merchant_risk_score",
+          "importance": 0.7180478572845459
+        },
+        {
+          "name": "TransactionAmt",
+          "importance": 0.5434614419937134
+        },
+        {
+          "name": "hour_of_day",
+          "importance": 0.4294321537017822
+        },
+        {
+          "name": "DeviceInfo_enc",
+          "importance": 0.23354116082191467
+        },
+        {
+          "name": "high_risk_country",
+          "importance": 0.22037121653556824
+        },
+        {
+          "name": "day_of_week",
+          "importance": 0.19338038563728333
+        },
+        {
+          "name": "DeviceType_enc",
+          "importance": 0.14627255499362946
+        },
+        {
+          "name": "card_type_enc",
+          "importance": 0.14435654878616333
+        },
+        {
+          "name": "is_night",
+          "importance": 0.09400421380996704
+        },
+        {
+          "name": "suspicious_time",
+          "importance": 0.06752976030111313
+        },
+        {
+          "name": "high_amount",
+          "importance": 0.013546688482165337
+        },
+        {
+          "name": "amt_log",
+          "importance": 0.0
+        },
+        {
+          "name": "amt_zscore",
+          "importance": 0.0
+        },
+        {
+          "name": "is_weekend",
+          "importance": 0.0
+        },
+        {
+          "name": "high_risk_merchant",
+          "importance": 0.0
+        }
+      ],
+      "cfa_in_top20": 8
+    },
+    "controllability": {
+      "fraudster_controlled": 12,
+      "system_controlled": 6,
+      "full_auc": 0.9865081430676667,
+      "system_only_auc": 0.7979682943443765,
+      "robustness_ratio": 0.8088816092921417
+    }
+  },
+  "rq1_pass": false,
+  "rq2_pass": "False",
+  "rq3_pass": true,
+  "rq4_pass": true
+}

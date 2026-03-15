@@ -1,0 +1,128 @@
+# project.yaml — AI-Augmented Financial Anomaly Detection (FP-04)
+#
+# CFA × AI intersection: apply ML anomaly detection to financial transactions
+# with explainability constraints. C5 scarcity: 10-50 people globally.
+# Profile: blog-track (govML v2.5)
+
+project:
+  name: "AI-Augmented Financial Anomaly Detection"
+  profile: blog-track
+  python_version: "3.11"
+  conda_env: "fin-anomaly"
+
+authority:
+  tier1: "docs/PROJECT_BRIEF.md"
+  tier2: null
+  tier3: "docs/ADVERSARIAL_EVALUATION.md"
+
+publication:
+  title: "A CFA Charterholder Built an ML Fraud Detector: Here's What the Models Miss"
+  pillar: "AI Security Architecture"
+  venue: "blog"
+  conference_cfp: "BSides / FS-ISAC"
+  target_date: "2026-06-01"
+
+skill_clusters:
+  L: { current: "L3+", target: "L4", how: "Ship deployed anomaly detector (Streamlit) used by others" }
+  S: { current: "S3", target: "S3+", how: "Adversarial fraud = 5th domain for controllability analysis" }
+  P: { current: "P3-adj", target: "P3", how: "CI/CD (GitHub Actions) + cloud deployment (Streamlit Cloud)" }
+  D: { current: "D4", target: "D4", how: "Maintain — financial domain tradeoffs" }
+  V: { current: "V1", target: "V2", how: "CFA × AI = unique angle for LinkedIn CFA community" }
+
+infrastructure:
+  workload_type: "cpu_bound"
+  min_disk_gb: 3
+  min_ram_gb: 4
+  min_cores: 2
+  api_budget_usd: 0
+  data_disk: "/data"
+
+experiments:
+  seeds: [42, 123, 456]
+  parts:
+    - name: baselines
+      methods: [logistic_regression, random_forest, xgboost]
+      datasets: [ieee_cis_fraud]
+      script: "scripts/train_baselines.py"
+      flags: "--sample-frac 1.0"
+      output_dir: "outputs/baselines"
+    - name: anomaly_detection
+      methods: [isolation_forest, local_outlier_factor, autoencoder]
+      datasets: [ieee_cis_fraud]
+      script: "scripts/train_anomaly.py"
+      output_dir: "outputs/anomaly"
+    - name: explainability
+      methods: [shap, feature_importance]
+      datasets: [ieee_cis_fraud]
+      script: "scripts/run_explainability.py"
+      output_dir: "outputs/explainability"
+    - name: adversarial_eval
+      methods: [feature_controllability]
+      datasets: [ieee_cis_fraud]
+      script: "scripts/adversarial_eval.py"
+      output_dir: "outputs/adversarial"
+
+datasets:
+  - name: ieee_cis_fraud
+    source: "Kaggle IEEE-CIS Fraud Detection"
+    download_method: "kaggle_cli"
+    download_command: "kaggle competitions download -c ieee-fraud-detection"
+    known_issues:
+      - "Large dataset: 590K transactions, 400+ features"
+      - "Highly imbalanced: ~3.5% fraud rate"
+      - "Many missing values (some features >90% null)"
+      - "Identity table requires join on TransactionID"
+    local_path: "data/raw/"
+    splits:
+      method: "temporal"
+      rationale: "Transactions are time-ordered; temporal split prevents leakage"
+
+config:
+  base: "config/base.yaml"
+  layers:
+    - pattern: "config/models/*.yaml"
+  resolved_output: "config_resolved.yaml"
+
+phases:
+  - name: "Phase 0 — Environment & Data"
+    checks:
+      - command: "bash scripts/verify_env.sh"
+        description: "Environment verified"
+      - command: "python scripts/check_data_ready.py"
+        description: "IEEE-CIS data present"
+      - command: "git remote -v"
+        description: "Git remote configured"
+  - name: "Phase 1 — EDA & Feature Engineering"
+    checks:
+      - command: "python scripts/train_baselines.py --sample-frac 0.01 --seed 42"
+        description: "Baseline smoke test"
+  - name: "Phase 2 — Models & Explainability"
+    checks:
+      - command: "python scripts/train_anomaly.py --sample-frac 0.01 --seed 42"
+        description: "Anomaly detection smoke test"
+  - name: "Phase 3 — Adversarial Eval & Findings"
+    checks:
+      - command: "test -f FINDINGS.md"
+        description: "FINDINGS.md exists"
+  - name: "Phase 4 — Publication Artifacts"
+    checks:
+      - command: "test -f blog/draft.md"
+        description: "Blog draft exists"
+      - command: "ls blog/images/*.png | wc -l"
+        description: "≥2 figures exist"
+
+artifacts:
+  run_id_pattern: "{part}_{method}_seed{seed}"
+  per_run_files:
+    - "summary.json"
+    - "config_resolved.yaml"
+  hash_algorithm: "sha256"
+  manifest_file: "outputs/manifest.json"
+
+ai_governance:
+  tools:
+    - name: "Claude Code"
+      role: "Coding copilot, feature engineering, figure generation"
+      prohibited: "Must not interpret financial risk implications (CFA judgment). Must not generate trading signals."
+  anti_ghostwriting: true
+  test_set_barrier: true
