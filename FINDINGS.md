@@ -117,6 +117,12 @@ We built an ML fraud detection pipeline on 100K synthetic financial transactions
 
 ---
 
+## Future Work
+
+**Future work: validate on IEEE-CIS Fraud Detection dataset (real transactions) to test whether synthetic data findings generalize.** The IEEE-CIS dataset contains 590K real transactions from Vesta Corporation with genuine adversarial dynamics (real fraudsters adapting to detection systems). Key questions for validation: (1) Does the CFA feature importance ranking hold on real data? (2) Is the 81% system-only robustness ratio reproducible, or is it an artifact of synthetic data generation? (3) Do non-linear interaction effects (which justify XGBoost over rules) become more or less pronounced with real adversarial noise?
+
+---
+
 ## Artifacts
 
 | Artifact | Path |
