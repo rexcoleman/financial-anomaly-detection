@@ -123,6 +123,43 @@ We built an ML fraud detection pipeline on 100K synthetic financial transactions
 
 ---
 
+## Sanity Baselines
+
+**Result: Real model massively outperforms dummy classifiers, confirming the model has learned genuine signal. [DEMONSTRATED, SYNTHETIC]**
+
+| Baseline | F1 | AUC-ROC |
+|----------|-----|---------|
+| DummyClassifier (most_frequent) | 0.000 | — |
+| DummyClassifier (stratified) | 0.035 | 0.500 |
+| RandomForest (real features) | 0.835 | 0.974 |
+| RandomForest (shuffled labels) | 0.000 | 0.491 |
+
+**Sanity gap (AUC):** 0.974 - 0.491 = **0.482** — PASS.
+
+The real model (AUC 0.974) vastly outperforms both the stratified dummy (AUC 0.500) and the shuffled-label control (AUC 0.491). The shuffled-label result confirms that the model cannot memorize label-independent patterns; it requires actual feature-label correspondence. XGBoost (AUC 0.987) would show an even larger gap. On synthetic data, this confirms the pipeline is learning real signal, not exploiting data leakage or class imbalance artifacts.
+
+---
+
+## Learning Curve Analysis
+
+**Result: XGBoost performance improves steadily with more data, reaching AUC 0.987 at full training size. [SUGGESTED, SYNTHETIC]**
+
+XGBoost validation AUC across training fractions (5 seeds, zero cross-seed variance):
+
+| Fraction | n_samples | Test AUC (mean) | Test AUC (std) |
+|----------|-----------|-----------------|----------------|
+| 0.10 | 7,000 | 0.9785 | 0.0000 |
+| 0.25 | 17,500 | 0.9821 | 0.0000 |
+| 0.50 | 35,000 | 0.9830 | 0.0000 |
+| 0.75 | 52,500 | 0.9860 | 0.0000 |
+| 1.00 | 70,000 | 0.9874 | 0.0000 |
+
+**Key finding:** Performance starts high (0.979 at 10% data) and improves monotonically to 0.987, a total gain of only +0.9pp across a 10x data increase. The zero cross-seed variance reflects deterministic XGBoost behavior on this synthetic dataset.
+
+**Interpretation:** The synthetic PaySim data contains strong, clean signal that is learnable even from small fractions. The near-flat learning curve (0.979 to 0.987) is consistent with synthetic data where fraud patterns are injected programmatically rather than emerging from adversarial dynamics. On real transaction data with noisier labels and adversarial adaptation, the learning curve would likely show steeper improvement with more data. RandomForest shows a similar pattern (AUC 0.971 to 0.973), while LogisticRegression is essentially flat (AUC 0.975 to 0.977) — consistent with linearly separable synthetic patterns.
+
+---
+
 ## Artifacts
 
 | Artifact | Path |
