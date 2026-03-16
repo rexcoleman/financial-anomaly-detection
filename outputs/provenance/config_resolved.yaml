@@ -1,0 +1,77 @@
+# Resolved configuration — FP-04 Financial Anomaly Detection
+# Auto-generated provenance artifact
+
+project:
+  name: "AI-Augmented Financial Anomaly Detection"
+  profile: blog-track
+  framework: "govML v2.5"
+
+data:
+  source: "Kaggle IEEE-CIS Fraud Detection (PaySim synthetic)"
+  n_transactions: 100000
+  fraud_rate: 0.035
+  split_method: temporal
+  train_size: 70000
+  test_size: 30000
+
+seeds: [42, 123, 456, 789, 1024]
+
+models:
+  baselines:
+    - name: LogisticRegression
+      library: sklearn
+    - name: RandomForest
+      library: sklearn
+    - name: XGBoost
+      library: xgboost
+  expanded:
+    - name: SVM-RBF
+      library: sklearn
+      note: "50K subsample (compute constraint)"
+    - name: LightGBM
+      library: lightgbm
+      n_estimators: 200
+  anomaly:
+    - name: IsolationForest
+      library: sklearn
+
+explainability:
+  method: SHAP
+  model: XGBoost
+  top_k: 20
+  cfa_features_in_top20: 8
+
+features:
+  total: 20
+  fraudster_controlled: 12
+  system_controlled: 6
+  engineered:
+    - amt_to_median_ratio
+    - amt_log
+    - amt_zscore
+    - protonmail
+    - addr_mismatch
+    - high_risk_country
+    - high_risk_merchant
+    - suspicious_time
+    - is_night
+    - is_weekend
+    - high_amount
+    - merchant_risk_score
+
+diagnostics:
+  complexity_curves:
+    models: [XGBoost, RandomForest, SVM-RBF, LightGBM]
+    params:
+      XGBoost: {param: max_depth, values: [2, 3, 5, 7, 10]}
+      RandomForest: {param: n_estimators, values: [10, 50, 100, 200, 500]}
+      SVM-RBF: {param: C, values: [0.01, 0.1, 1.0, 10.0, 100.0]}
+      LightGBM: {param: max_depth, values: [2, 3, 5, 7, 10, 15]}
+  learning_curves:
+    models: [LogisticRegression, RandomForest, XGBoost]
+    fractions: [0.1, 0.25, 0.5, 0.75, 1.0]
+
+controllability:
+  full_model_auc: 0.987
+  system_only_auc: 0.798
+  robustness_ratio: 0.81
