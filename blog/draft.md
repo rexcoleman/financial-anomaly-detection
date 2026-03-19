@@ -24,6 +24,8 @@ XGBoost achieves 0.987 AUC — excellent. But the CFA-informed rule-based baseli
 
 ### CFA Features in Top 20 SHAP
 
+![SHAP Feature Importance](images/shap_summary.png)
+
 8 of the top 20 most predictive features are CFA-informed:
 1. **amt_to_median_ratio** (rank 4) — relative transaction size vs merchant normal
 2. **protonmail** (rank 5) — privacy-focused email = risk signal
@@ -50,6 +52,12 @@ A sophisticated fraudster controls: transaction amount, timing, email, billing c
 ![Cross-Domain ACA](images/cross_domain_5.png)
 
 This is the fifth project where controllability analysis produces actionable security insights. The pattern holds across network security, vulnerability prediction, AI agents, cryptographic migration, and now financial fraud. It's a general principle.
+
+### Complexity Curves: Shallow Trees Win
+
+![Complexity Curves](images/complexity_curves.png)
+
+XGBoost peaks at max_depth=2 (AUC 0.990) and degrades with deeper trees. LightGBM is more robust to over-parameterization. SVM-RBF shows the steepest overfitting. The lesson: on this data, simplicity beats capacity.
 
 ## What I Learned
 

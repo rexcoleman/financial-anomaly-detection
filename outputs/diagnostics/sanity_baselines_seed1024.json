@@ -1,0 +1,22 @@
+{
+  "seed": 1024,
+  "baselines": {
+    "dummy_most_frequent": {
+      "f1": 0.0
+    },
+    "dummy_stratified": {
+      "f1": 0.0296,
+      "auc": 0.4973
+    },
+    "rf_real": {
+      "f1": 0.8289,
+      "auc": 0.9731
+    },
+    "rf_shuffled": {
+      "f1": 0.0,
+      "auc": 0.4838
+    }
+  },
+  "sanity_gap_auc": 0.4893,
+  "sanity_pass": true
+}
